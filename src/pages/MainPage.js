@@ -9,7 +9,8 @@ function MainPage() {
   const [sortBy, setSortBy] = useState("default");
 
   useEffect(() => {
-    let results = products;
+   
+    let results = [...products]; 
 
     if (searchTerm) {
       results = results.filter(p => 
@@ -31,34 +32,13 @@ function MainPage() {
   }, [searchTerm, selectedSkinType, sortBy]);
 
   return (
-    <div className="bg-background text-on-surface font-manrope">
-      {/* Top Navigation Bar (Fixed) */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-100 shadow-sm">
-        <div className="flex justify-between items-center h-20 px-10 max-w-screen-2xl mx-auto font-noto-serif text-stone-800">
-          <div className="flex items-center gap-10">
-            <span className="text-2xl font-semibold tracking-tight">M&L</span>
-            <nav className="hidden md:flex gap-8">
-              <span className="text-stone-900 border-b-2 border-rose-200 pb-1 font-medium cursor-pointer">Home</span>
-              <span className="text-stone-500 hover:text-stone-800 cursor-pointer">About</span>
-            </nav>
-          </div>
-          <div className="flex items-center gap-6">
-            {/* Header Search Placeholder */}
-            <div className="hidden lg:flex items-center bg-surface-container rounded-full px-4 py-2 border border-stone-200">
-              <span className="material-symbols-outlined text-stone-500 text-xl">search</span>
-              <input className="bg-transparent border-none focus:ring-0 text-sm w-48 text-stone-800" placeholder="Find your ritual..." type="text"/>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-stone-500 font-medium cursor-pointer">Login</span>
-              <button className="bg-primary-container text-on-primary-container px-6 py-2.5 rounded-full font-semibold hover:scale-[1.02] transition-transform">Register</button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="pt-32 pb-20 px-10 max-w-screen-2xl mx-auto">
+ 
+    <div className="bg-background text-on-surface font-manrope pt-24">
+      
+      <main className="pb-20 px-10 max-w-screen-2xl mx-auto">
+        
         {/* Hero Section */}
-        <section className="mb-12">
+        <section className="mb-12 mt-10">
           <h1 className="font-noto-serif text-5xl text-on-surface mb-4 tracking-tight">Discover Your Glow</h1>
           <p className="text-lg text-on-surface-variant max-w-2xl">
             Meticulously formulated essentials for every skin ritual. Find the perfect match for your unique texture and needs.
@@ -66,7 +46,7 @@ function MainPage() {
         </section>
 
         {/* Main Filter Bar */}
-        <section className="mb-12 sticky top-24 z-40">
+        <section className="mb-12 sticky top-4 z-40">
           <div className="bg-white/90 backdrop-blur-xl p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
               <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-stone-500">search</span>
@@ -113,7 +93,6 @@ function MainPage() {
           {displayedProducts.map((product) => (
             <div key={product.id} className="group bg-white rounded-lg p-3 hover:shadow-lg transition-all duration-500 border border-stone-100">
               <div className="relative aspect-square mb-6 overflow-hidden rounded-lg bg-surface-container">
-                {/* عرض الصورة الحقيقية للمنتج */}
                 <img 
                   src={product.image} 
                   alt={product.name} 
@@ -129,8 +108,14 @@ function MainPage() {
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h3 className="font-noto-serif text-xl text-on-surface mb-1">{product.name}</h3>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${product.skinType === 'Oily' ? 'bg-green-100 text-green-800' : product.skinType === 'Dry' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
-                      For {product.skinType}
+                    {/* التعديل الجديد هنا: تخصيص لون وشكل منتجات "All" */}
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
+                      product.skinType === 'Oily' ? 'bg-green-100 text-green-800' : 
+                      product.skinType === 'Dry' ? 'bg-blue-100 text-blue-800' : 
+                      product.skinType === 'Combination' ? 'bg-orange-100 text-orange-800' : 
+                      'bg-stone-100 text-stone-600'
+                    }`}>
+                      {product.skinType === 'All' ? 'For All Skin Types' : `For ${product.skinType}`}
                     </span>
                   </div>
                   <div className="flex flex-col items-end">
