@@ -13,7 +13,7 @@ const products = [
     skinType: "Dry", 
     price: 15, 
     rating: 4.8,
-    image: "https://images.unsplash.com/photo-1570194065650-d99fb4b38b15?auto=format&fit=crop&q=80&w=400" 
+    image: "https://images.unsplash.com/photo-1707910393318-8f97ea71736a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   },
   { 
     id: 3, 
