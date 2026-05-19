@@ -1,14 +1,36 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [skinType, setSkinType] = useState('');
+  const [error, setError] = useState('');
+  
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); 
-    alert("(Placeholder)");
+    setError(''); // مسح أي خطأ سابق
+    
+    try {
+      // إرسال البيانات للسيرفر (Backend) الذي عملناه
+      const response = await axios.post('http://localhost:5000/api/auth/register', {
+        name,
+        email,
+        password
+      });
+      
+      // إذا نجح التسجيل، ننقل المستخدم لصفحة تسجيل الدخول
+      alert('Account created successfully! Please login.');
+      navigate('/');
+      
+    } catch (err) {
+      // إذا حصل خطأ (مثلاً الإيميل مستخدم مسبقاً)
+      setError(err.response?.data?.message || 'Something went wrong');
+    }
   };
 
   return (
@@ -16,9 +38,16 @@ function Register() {
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 border border-stone-100">
         
         <div className="text-center mb-8">
-          <h2 className="font-noto-serif text-3xl text-on-surface mb-2">Join M&L</h2>
+          <h2 className="font-noto-serif text-3xl text-on-surface mb-2">Join M&L Skincare</h2>
           <p className="text-on-surface-variant">Create an account to start your journey</p>
         </div>
+
+        {/* عرض رسالة الخطأ إذا وجدت */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           
