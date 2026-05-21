@@ -1,77 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL = 'https://skincare-backend-0nc9.onrender.com/api';
 
-function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const location = useLocation();
+function Header({ user, setUser }) {
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get(`${API_URL}/auth/me`, { withCredentials: true })
-      .then(res => { if (res.data.user) setUser(res.data.user); })
-      .catch(() => setUser(null));
-  }, [location.pathname]);
-
-  const getLinkClass = (path) => {
-    return location.pathname === path
-      ? "text-stone-900 font-semibold border-b-2 border-primary pb-1"
-      : "text-stone-500 hover:text-stone-800 transition-colors";
-  };
-
   const handleLogout = async () => {
+
     try {
-      await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+
+      await axios.post(
+        `${API_URL}/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
+
       setUser(null);
-      window.location.href = '/login';
+
+      navigate('/login');
+
     } catch (error) {
-      console.error("Logout error", error);
+      console.log(error);
     }
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-100 shadow-sm">
-      <div className="flex justify-between items-center h-20 px-6 md:px-10 max-w-screen-2xl mx-auto font-noto-serif text-stone-800">
-        <Link to="/" className="text-2xl font-semibold tracking-tight text-stone-900">M&L Skincare</Link>
-        <nav className="hidden md:flex gap-8 items-center">
-          <Link to="/" className={getLinkClass("/")}>Home</Link>
-          {user ? (
-            <>
-              <span className="text-stone-800 font-semibold">Hello, {user.name}</span>
-              <Link to="/add-product" className={getLinkClass("/add-product")}>Add Product</Link>
-              <button onClick={handleLogout} className="text-stone-500 hover:text-red-600 transition-colors">Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className={getLinkClass("/login")}>Login</Link>
-              <Link to="/register" className={getLinkClass("/register")}>Register</Link>
-            </>
-          )}
-        </nav>
-        <button className="md:hidden text-stone-800 focus:outline-none" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          <span className="material-symbols-outlined text-3xl">{isMenuOpen ? 'close' : 'menu'}</span>
-        </button>
-      </div>
-      {isMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-stone-100 px-6 py-4 flex flex-col gap-4 font-manrope text-lg">
-          <Link to="/" onClick={() => setIsMenuOpen(false)} className={getLinkClass("/")}>Home</Link>
-          {user ? (
-            <>
-              <span className="text-stone-800 font-semibold">Hello, {user.name}</span>
-              <Link to="/add-product" onClick={() => setIsMenuOpen(false)} className={getLinkClass("/add-product")}>Add Product</Link>
-              <button onClick={handleLogout} className="text-left text-red-600">Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" onClick={() => setIsMenuOpen(false)} className={getLinkClass("/login")}>Login</Link>
-              <Link to="/register" onClick={() => setIsMenuOpen(false)} className={getLinkClass("/register")}>Register</Link>
-            </>
-          )}
-        </div>
-      )}
+
+    <header className="p-6 flex justify-between items-center">
+
+      <h1 className="text-3xl font-bold">
+        M&L Skincare
+      </h1>
+
+      <nav className="flex gap-6">
+
+        <Link to="/">Home</Link>
+
+        {user ? (
+          <>
+            <Link to="/add-product">Add Product</Link>
+
+            <button onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+        )}
+
+      </nav>
+
     </header>
   );
 }
