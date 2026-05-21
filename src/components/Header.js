@@ -10,15 +10,12 @@ function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // إضافة withCredentials: true ضروري لإرسال الكوكيز للسيرفر
     axios.get('http://localhost:5000/api/auth/me', { withCredentials: true })
       .then(res => { 
-        if (res.data.user) {
-          setUser(res.data.user);
-        }
+        if (res.data.user) setUser(res.data.user);
       })
       .catch(() => setUser(null)); 
-  }, [location.pathname, user]); 
+  }, [location.pathname]); 
 
   const getLinkClass = (path) => {
     return location.pathname === path 
@@ -28,7 +25,6 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      // إضافة withCredentials: true ضروري لمسح الكوكيز من السيرفر
       await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
       setUser(null); 
       window.location.href = '/login'; 
@@ -45,12 +41,16 @@ function Header() {
           M&L Skincare
         </Link>
 
-        <nav className="hidden md:flex gap-8">
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex gap-8 items-center">
           <Link to="/" className={getLinkClass("/")}>Home</Link>
           
           {user ? (
             <>
               <span className="text-stone-800 font-semibold">Hello, {user.name}</span>
+              <Link to="/add-product" className={getLinkClass("/add-product")}>
+                Add Product
+              </Link>
               <button onClick={handleLogout} className="text-stone-500 hover:text-red-600 transition-colors">
                 Logout
               </button>
@@ -73,7 +73,7 @@ function Header() {
         </button>
       </div>
 
-      {/* قائمة الموبايل */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-stone-100 px-6 py-4 flex flex-col gap-4 font-manrope text-lg">
           <Link to="/" onClick={() => setIsMenuOpen(false)} className={getLinkClass("/")}>Home</Link>
@@ -81,6 +81,9 @@ function Header() {
           {user ? (
             <>
               <span className="text-stone-800 font-semibold">Hello, {user.name}</span>
+              <Link to="/add-product" onClick={() => setIsMenuOpen(false)} className={getLinkClass("/add-product")}>
+                Add Product
+              </Link>
               <button onClick={handleLogout} className="text-left text-red-600">
                 Logout
               </button>
