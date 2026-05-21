@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
+const API_URL = 'https://skincare-backend-0nc9.onrender.com/api';
+
 function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,22 +15,19 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    setError(''); // مسح أي خطأ سابق
+    setError('');
     
     try {
-      // إرسال البيانات للسيرفر (Backend) الذي عملناه
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post(`${API_URL}/auth/register`, {
         name,
         email,
         password
       });
       
-      // إذا نجح التسجيل، ننقل المستخدم لصفحة تسجيل الدخول
       alert('Account created successfully! Please login.');
-      navigate('/');
+      navigate('/login');
       
     } catch (err) {
-      // إذا حصل خطأ (مثلاً الإيميل مستخدم مسبقاً)
       setError(err.response?.data?.message || 'Something went wrong');
     }
   };
@@ -42,7 +41,6 @@ function Register() {
           <p className="text-on-surface-variant">Create an account to start your journey</p>
         </div>
 
-        {/* عرض رسالة الخطأ إذا وجدت */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center">
             {error}
@@ -111,6 +109,10 @@ function Register() {
             Create Account
           </button>
         </form>
+
+        <p className="text-center text-stone-500 mt-6 text-sm">
+          Already have an account? <Link to="/login" className="text-stone-800 font-semibold hover:underline">Login</Link>
+        </p>
       </div>
     </div>
   );

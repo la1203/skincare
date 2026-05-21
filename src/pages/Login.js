@@ -1,30 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
+const API_URL = 'https://skincare-backend-0nc9.onrender.com/api';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
     try {
-      // إرسال البيانات للسيرفر للتحقق منها
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password
-      }, { withCredentials: true }); // <-- أضيفي هذا الجزء
-      
-      // إذا تم تسجيل الدخول بنجاح
-      alert('Login successful! Welcome back.');
-      // نجبر المتصفح على عمل تحديث فوري لكي يقرأ الهيدر الجلسة الجديدة
+      await axios.post(`${API_URL}/auth/login`, { email, password }, { withCredentials: true });
       window.location.href = '/';
-      
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password');
     }
@@ -39,7 +30,6 @@ function Login() {
           <p className="text-on-surface-variant">Sign in to continue your skincare ritual</p>
         </div>
 
-        {/* عرض رسالة الخطأ إذا وجدت */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center">
             {error}
@@ -58,7 +48,7 @@ function Login() {
               required 
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1">Password</label>
             <input 
@@ -70,14 +60,19 @@ function Login() {
               required 
             />
           </div>
-          
+
           <button 
             type="submit" 
-            className="w-full py-3 bg-primary text-white rounded-full font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-md"
+            className="w-full py-3 bg-primary-container text-on-primary-container rounded-full font-bold hover:scale-[1.02] active:scale-95 transition-all"
           >
             Sign In
           </button>
         </form>
+
+        <p className="text-center text-stone-500 mt-6 text-sm">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-stone-800 font-semibold hover:underline">Register</Link>
+        </p>
       </div>
     </div>
   );
